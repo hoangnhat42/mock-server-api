@@ -1,0 +1,1 @@
+ssh -i gcp hadesnhat@34.143.210.132 "cd pap-app/mock-server-api && docker compose down --rmi all && docker compose up -d"
