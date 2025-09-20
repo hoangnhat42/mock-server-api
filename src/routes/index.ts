@@ -24,6 +24,12 @@ export const registerRoutes = (app: Express): void => {
    *                 type: string
    *                 description: The URL path for the mock endpoint
    *                 example: "/api/foo"
+   *               methodHttp:
+   *                 type: string
+   *                 description: The HTTP method for the mock endpoint
+   *                 enum: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
+   *                 default: "GET"
+   *                 example: "POST"
    *               data:
    *                 type: object
    *                 description: The JSON data to return when this endpoint is called
@@ -46,6 +52,8 @@ export const registerRoutes = (app: Express): void => {
    *                     id:
    *                       type: number
    *                     url:
+   *                       type: string
+   *                     methodHttp:
    *                       type: string
    *                     data:
    *                       type: object
@@ -71,7 +79,7 @@ export const registerRoutes = (app: Express): void => {
    */
   app.post("/api/register", async (req, res) => {
     try {
-      const { url, data } = req.body;
+      const { url, methodHttp = "GET", data } = req.body;
 
       if (!url || data === undefined) {
         return res.status(400).json({
@@ -94,10 +102,27 @@ export const registerRoutes = (app: Express): void => {
         });
       }
 
+      const validMethods = [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH",
+        "HEAD",
+        "OPTIONS",
+      ];
+      if (!validMethods.includes(methodHttp.toUpperCase())) {
+        return res.status(400).json({
+          error: "Bad Request",
+          message: "methodHttp must be one of: " + validMethods.join(", "),
+        });
+      }
+
       const normalizedUrl = url.startsWith("/") ? url : `/${url}`;
 
       const [endpoint, created] = await Endpoint.upsert({
         url: normalizedUrl,
+        methodHttp: methodHttp.toUpperCase(),
         data: data,
       });
 
@@ -109,6 +134,7 @@ export const registerRoutes = (app: Express): void => {
         endpoint: {
           id: endpoint.id,
           url: endpoint.url,
+          methodHttp: endpoint.methodHttp,
           data: endpoint.data,
           createdAt: endpoint.createdAt,
           updatedAt: endpoint.updatedAt,
@@ -151,6 +177,8 @@ export const registerRoutes = (app: Express): void => {
    *                         type: number
    *                       url:
    *                         type: string
+   *                       methodHttp:
+   *                         type: string
    *                       data:
    *                         type: object
    *                       createdAt:
@@ -173,6 +201,7 @@ export const registerRoutes = (app: Express): void => {
         endpoints: endpoints.map((endpoint) => ({
           id: endpoint.id,
           url: endpoint.url,
+          methodHttp: endpoint.methodHttp,
           data: endpoint.data,
           createdAt: endpoint.createdAt,
           updatedAt: endpoint.updatedAt,
@@ -303,20 +332,24 @@ export const registerRoutes = (app: Express): void => {
 
   /**
    * Dynamic route handler for registered endpoints
-   * This must be the last route to catch all GET requests to registered endpoints
+   * This must be the last route to catch all requests to registered endpoints
    */
-  app.get("*", async (req, res) => {
+  const handleDynamicRoute = async (req: any, res: any) => {
     try {
       const url = req.path;
+      const method = req.method;
 
       const endpoint = await Endpoint.findOne({
-        where: { url },
+        where: {
+          url,
+          methodHttp: method,
+        },
       });
 
       if (!endpoint) {
         return res.status(404).json({
           error: "Not Found",
-          message: `No mock data found for endpoint: ${url}`,
+          message: `No mock data found for endpoint: ${method} ${url}`,
         });
       }
 
@@ -329,5 +362,14 @@ export const registerRoutes = (app: Express): void => {
       });
     }
     return;
-  });
+  };
+
+  // Register dynamic routes for all HTTP methods
+  app.get("*", handleDynamicRoute);
+  app.post("*", handleDynamicRoute);
+  app.put("*", handleDynamicRoute);
+  app.delete("*", handleDynamicRoute);
+  app.patch("*", handleDynamicRoute);
+  app.head("*", handleDynamicRoute);
+  app.options("*", handleDynamicRoute);
 };

@@ -1,11 +1,11 @@
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
+const { Sequelize } = require("sequelize");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
-export const sequelize = new Sequelize({
+const sequelize = new Sequelize({
   dialect: "postgres",
-  host: process.env.DB_HOST || "localhost",
+  host: process.env.DB_HOST || "postgres",
   port: parseInt(process.env.DB_PORT || "5432"),
   database: process.env.DB_NAME || "mock_server_db",
   username: process.env.DB_USER || "postgres",
@@ -18,3 +18,5 @@ export const sequelize = new Sequelize({
     idle: 10000,
   },
 });
+
+module.exports = { sequelize };
