@@ -3,7 +3,7 @@ require('dotenv').config();
 module.exports = {
   development: {
     username: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || 'password',
+    password: process.env.DB_PASSWORD || 'yAIraSSu0R7fHe1zAMZHZo0hS67ZxLT9S2doFiIzTMU=',
     database: process.env.DB_NAME || 'mock_server_db',
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 5432,

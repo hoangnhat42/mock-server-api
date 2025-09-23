@@ -13,9 +13,9 @@ deploy:
 	@docker push $(REGISTRY)/$(USERNAME)/$(IMAGE_NAME):$(VERSION)
 	@docker push $(REGISTRY)/$(USERNAME)/$(IMAGE_NAME):latest
 	@echo "Deploying to GCP server..."
-	@./startserver-gcp.sh
+	@./startserver-contabo.sh
 	@echo "Running database migrations..."
-	@ssh -i gcp hadesnhat@34.143.210.132 "cd pap-app/mock-server-api && docker compose exec mock-server-api npm run migrate"
+	@ssh nhat@154.26.132.49 "cd pap-app/mock-server-api && sudo su && docker compose exec mock-server-api npm run migrate"
 	@echo "Deployment completed successfully!"
 	@echo "Image available at: $(REGISTRY)/$(USERNAME)/$(IMAGE_NAME):$(VERSION)"
 

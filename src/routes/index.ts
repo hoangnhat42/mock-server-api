@@ -1,5 +1,6 @@
 import { Express } from "express";
 import { Endpoint } from "../models/Endpoint";
+import { apiKeyMiddleware } from "../middleware/auth";
 
 export const registerRoutes = (app: Express): void => {
   /**
@@ -77,7 +78,7 @@ export const registerRoutes = (app: Express): void => {
    *       500:
    *         description: Internal server error
    */
-  app.post("/api/register", async (req, res) => {
+  app.post("/api/register", apiKeyMiddleware, async (req, res) => {
     try {
       const { url, methodHttp = "GET", data } = req.body;
 
@@ -190,7 +191,7 @@ export const registerRoutes = (app: Express): void => {
    *       500:
    *         description: Internal server error
    */
-  app.get("/api/endpoints", async (req, res) => {
+  app.get("/api/endpoints", apiKeyMiddleware, async (req, res) => {
     try {
       const endpoints = await Endpoint.findAll({
         order: [["createdAt", "DESC"]],

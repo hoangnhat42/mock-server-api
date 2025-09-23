@@ -133,16 +133,16 @@ curl -X DELETE http://localhost:3000/api/endpoints/api/users \
 
 ## Environment Variables
 
-| Variable      | Description                | Default                    |
-| ------------- | -------------------------- | -------------------------- |
-| `DB_HOST`     | PostgreSQL host            | `localhost`                |
-| `DB_PORT`     | PostgreSQL port            | `5432`                     |
-| `DB_NAME`     | Database name              | `mock_server_db`           |
-| `DB_USER`     | Database username          | `postgres`                 |
-| `DB_PASSWORD` | Database password          | `password`                 |
-| `API_KEY`     | API key for authentication | `your-secret-api-key-here` |
-| `PORT`        | Server port                | `3000`                     |
-| `NODE_ENV`    | Environment                | `development`              |
+| Variable      | Description                | Default                                        |
+| ------------- | -------------------------- | ---------------------------------------------- |
+| `DB_HOST`     | PostgreSQL host            | `localhost`                                    |
+| `DB_PORT`     | PostgreSQL port            | `5432`                                         |
+| `DB_NAME`     | Database name              | `mock_server_db`                               |
+| `DB_USER`     | Database username          | `postgres`                                     |
+| `DB_PASSWORD` | Database password          | `yAIraSSu0R7fHe1zAMZHZo0hS67ZxLT9S2doFiIzTMU=` |
+| `API_KEY`     | API key for authentication | `your-secret-api-key-here`                     |
+| `PORT`        | Server port                | `3000`                                         |
+| `NODE_ENV`    | Environment                | `development`                                  |
 
 ## Database Schema
 

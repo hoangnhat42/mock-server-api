@@ -1,0 +1,1 @@
+ssh nhat@154.26.132.49 "cd pap-app/mock-server-api && sudo su && docker compose down --rmi all && docker compose up -d"
